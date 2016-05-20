@@ -1,4 +1,6 @@
 # FOR CPP
+.dSYM
+
 # Compiled Object files
 *.slo
 *.lo
