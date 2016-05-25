@@ -12,7 +12,7 @@ using namespace cv::xfeatures2d;
 
 int main(int argc, char* argv[]) {
 
-  if (argc > 3) {
+  if (argc < 3) {
     cout << "Usage: file_1 file_2" << endl;
     exit(0);
   }
