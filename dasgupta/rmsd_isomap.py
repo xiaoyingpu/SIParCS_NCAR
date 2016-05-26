@@ -35,6 +35,10 @@ def mse(filename1, filename2):
 
 
 
+def gen_dataset():
+    pass
+
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: frameworkpython rmsd_isomap.py img1 img2")
