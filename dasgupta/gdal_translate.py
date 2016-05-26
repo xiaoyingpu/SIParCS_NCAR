@@ -7,12 +7,14 @@ if not len(sys.argv) == 3:
 
 
 for f in os.listdir(sys.argv[1]):
+	
     if f.endswith(".nc"):
         f_list.append(f)
 
 
+os.chdir(sys.argv[1])
 for i in range(len(f_list)):
-    os.chdir(sys.argv[1])
+
     c = ["gdal_translate"]
     c.append("NETCDF:\"{}\":tas_trends_ann".format(f_list[i]))
     # use absolute path for the output tiff
