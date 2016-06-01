@@ -4,6 +4,7 @@ from subprocess import call
 f_list = []
 if not len(sys.argv) == 4:
     print("Usage: python gdal_translate.py <nc_dir> <tif_dir> <variable name>")
+    exit()
 
 
 for f in os.listdir(sys.argv[1]):

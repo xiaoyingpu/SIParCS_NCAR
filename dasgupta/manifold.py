@@ -3,15 +3,19 @@ from pylab import subplot,imshow,NullLocator
 from sklearn import manifold, datasets
 import os, sys, cv2, re
 
+if len(sys.argv) != 2:
+    print("Usage: frameworkpython manifold.py <img dir>")
+    exit()
 
 f_list = []
 label_list = []
 X = []
 
 for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
-    if f.endswith(".tif") or f.endswith(".png"):    # there could be more
+    if (f.endswith(".tif") or f.endswith(".png")) and f[:5] == "CESM1":    # there could be more
         f_list.append(f)
-        lbl = re.findall(r"#\d+", f)
+        #lbl = re.findall(r"#\d+", f)
+        lbl = f[6:10]
         label_list.append(lbl[0][1:])              # regex!
 # change working directory
 os.chdir(sys.argv[1])
@@ -19,8 +23,7 @@ os.chdir(sys.argv[1])
 for f in f_list:
     img = cv2.imread(f)
     X.append(list(img.flat))
-
-
+print(len(X), len(X[0]))
 # load the digits dataset
 # 901 samples, about 180 samples per class
 # the digits represented 0,1,2,3,4
