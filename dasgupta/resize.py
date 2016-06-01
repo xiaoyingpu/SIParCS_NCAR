@@ -9,13 +9,17 @@ if len(sys.argv) != 4:
     exit()
 
 
+f_list = []
 w = int(sys.argv[2])
 h = int(sys.argv[3])
-print(w,h)
+
 # change working directory
 os.chdir(sys.argv[1])
 
-f_list = []
+if not os.path.exists("./resize"):
+    os.makedirs("./resize")
+
+
 for f in os.listdir("."):
     if not f.endswith("tif"):
         continue
@@ -23,4 +27,4 @@ for f in os.listdir("."):
 
     im = Image.open(f)
     im = im.resize([w,h],Image.ANTIALIAS)
-    im.save("r-{}".format(f))
+    im.save("./resize/r-{}".format(f))
