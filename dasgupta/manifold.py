@@ -23,7 +23,7 @@ for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
         #lbl = re.findall(r"#\d+", f)
         lbl = f[6:10]
         # label_list.append(lbl[0][1:])              # regex!
-        label_list.append(f[:6])
+        label_list.append(f[1:7])
 # change working directory
 os.chdir(sys.argv[1])
 
@@ -45,13 +45,13 @@ Y = manifold.Isomap(5, 2).fit_transform(X)
 #figure(1)
 fig, ax = plt.subplots()
 ax.scatter(Y[:,0], Y[:,1])
-ann = []
-for i in range(len(label_list)):
-    ann.append(ax.annotate(label_list[i], xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
+#ann = []
+#for i in range(len(label_list)):
+#    ann.append(ax.annotate(label_list[i], xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
 
-mask = np.zeros(fig.canvas.get_width_height(), bool)
+#mask = np.zeros(fig.canvas.get_width_height(), bool)
 
-fig.canvas.show()
+#fig.canvas.show()
 
 #for a in ann:
 #    bbox = a.get_window_extent()
@@ -68,9 +68,8 @@ fig.canvas.show()
 
 plt.tight_layout()
 
-
-#scatter(Y[:,0], Y[:,1], c='k', alpha=0.3, s=10)
-#for i in range(Y.shape[0]):
-# text(Y[i, 0], Y[i, 1], str(label_list[i]),
-#      fontdict={'weight': 'bold', 'size': 11})
-#show()
+plt.scatter(Y[:,0], Y[:,1], c='k', alpha=0.3, s=10)
+for i in range(Y.shape[0]):
+ plt.text(Y[i, 0], Y[i, 1], str(label_list[i]),
+      fontdict={'weight': 'bold', 'size': 11})
+plt.show()
