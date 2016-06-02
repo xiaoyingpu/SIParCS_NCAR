@@ -10,6 +10,9 @@ import math
 from sklearn import manifold, datasets
 import os, sys, cv2, re
 
+import csv
+
+
 if len(sys.argv) != 2:
     print("Usage: frameworkpython manifold.py <img dir>")
     exit()
@@ -36,6 +39,14 @@ for f in f_list:
 # 5 neighbours will be considered and reduction on a 2d space
 Y = manifold.Isomap(5, 2).fit_transform(X)
 
+# persist csv
+with open("out.csv", "w+") as f:
+    writer = csv.writer(f)
+    for i in range(len(Y[:,0])):
+        row = [Y[:,0][i], Y[:,1][i],f_list[i]]
+        writer.writerow(row)
+
+
 # plotting the result
 #figure(1)
 fig, ax = plt.subplots()
@@ -47,7 +58,6 @@ mask = np.zeros(fig.canvas.get_width_height(), bool)
 
 plt.tight_layout()
 fig.canvas.draw()
-#plt.show()
 for a in ann:
     bbox = a.get_window_extent()
     x0 = int(bbox.x0)
@@ -58,6 +68,8 @@ for a in ann:
     s = np.s_[x0:x1+1, y0:y1+1]
     if np.any(mask[s]):
         a.set_visible(False)
+        if "IPSL" in a.get_text():
+            a.set_visible(True)
     else:
         mask[s] = True
 plt.show()

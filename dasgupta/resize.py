@@ -9,6 +9,7 @@ if len(sys.argv) != 4:
     exit()
 
 
+
 f_list = []
 w = int(sys.argv[2])
 h = int(sys.argv[3])
