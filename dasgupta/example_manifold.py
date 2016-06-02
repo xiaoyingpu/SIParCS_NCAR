@@ -1,5 +1,5 @@
-from pylab import scatter,text,show,cm,figure
-from pylab import subplot,imshow,NullLocator
+from matplotlib.pylab import scatter,text,show,cm,figure
+from matplotlib.pylab import subplot,imshow,NullLocator
 from sklearn import manifold, datasets
 
 # load the digits dataset
@@ -11,13 +11,18 @@ color = digits.target
 
 # running Isomap
 # 5 neighbours will be considered and reduction on a 2d space
-Y = manifold.Isomap(5, 2).fit_transform(X)
+
+
+for i in range(1,11):
+
+
+    Y = manifold.Isomap(i, 2).fit_transform(X)
 
 # plotting the result
-figure(1)
-scatter(Y[:,0], Y[:,1], c='k', alpha=0.3, s=10)
-for i in range(Y.shape[0]):
- text(Y[i, 0], Y[i, 1], str(color[i]),
-      color=cm.Dark2(color[i] / 5.),
-      fontdict={'weight': 'bold', 'size': 11})
+    figure(i)
+    scatter(Y[:,0], Y[:,1], c='k', alpha=0.3, s=10)
+    for i in range(Y.shape[0]):
+        text(Y[i, 0], Y[i, 1], str(color[i]),
+                color=cm.Dark2(color[i] / 5.),
+                fontdict={'weight': 'bold', 'size': 11})
 show()

@@ -37,7 +37,7 @@ for f in f_list:
 
 # running Isomap
 # 5 neighbours will be considered and reduction on a 2d space
-Y = manifold.Isomap(5, 2).fit_transform(X)
+Y = manifold.Isomap(7, 2).fit_transform(X)
 
 # persist csv
 with open("out.csv", "w+") as f:
