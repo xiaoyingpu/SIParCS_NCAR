@@ -29,8 +29,9 @@ for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
 # change working directory
 os.chdir(sys.argv[1])
 
+N = len(f_list)
 # distance matrix, n by n init to zeros
-dm = np.zeros((len(f_list), len(f_list)))
+dm = np.zeros((N, N))
 
 for i_tuple in itertools.combinations(range(len(f_list)), 2):
     i, j = i_tuple
@@ -40,16 +41,15 @@ for i_tuple in itertools.combinations(range(len(f_list)), 2):
     img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
     img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
-    s = ssim(img1, img2)
+    s = 1 - ssim(img1, img2)
 
     # symmetric matrix!
     # not sparse anymore!!!!
     dm[i][j] = s
     dm[j][i] = s
-
-
+print dm
+# http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
-N = len(f_list)
 k = 2   # top 2 vectors for 2D vis
 
 
