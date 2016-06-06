@@ -1,3 +1,4 @@
+from __future__ import division
 import matplotlib
 matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
@@ -7,29 +8,14 @@ from skimage.measure import compare_ssim  as ssim
 
 from scipy.linalg import eigh as largest_eigh
 from math import sqrt
-from __future__ import division
 import numpy as np
 import itertools
-import os, sys, cv2
+import os, sys, cv2, csv
 
 
 # replace the kNN, graph approach with a distance matrix,
 # SSIM as the distance metric
 # make sense????
-
-def get_xy(i, eigval, eigvec):
-    """
-    the i-th data point
-    """
-    # 2nd eigenvalue, index = 1
-    x = sqrt(eigval[1]) * eigvec[:,1][i]
-    # 1st eigenvalue
-    y = sqrt(eigval[0]) * eigvec[:,0][i]
-    print x, y
-    return x, y
-
-
-
 
 
 if len(sys.argv) != 2:
@@ -67,17 +53,28 @@ N = len(f_list)
 k = 2   # top 2 vectors for 2D vis
 
 
-# get centering matrix
+# centering matrix
+H = np.eye(N) - np.ones((N, N))/N
+tau = -0.5 * H.dot(dm ** 2).dot(H)
 
+# eigen- in descending order
+evals, evecs = largest_eigh(tau)
+idx = np.argsort(evals)[::-1]
+evals = evals[idx]
+evecs = evecs[:,idx]
 
+w, = np.where(evals > 0)
+L = np.diag(np.sqrt(evals[w]))
+V = evecs[:,w]
+Y = V.dot(L)
 
+# Y: (n, p) array, col is a dimension
 
-# eigen- in ascending order
-#eigenvals, eigenvecs = largest_eigh(dm, eigvals = (N - k, N - 1))
-
-for i in range(N):
-    get_xy(i, eigenvals, eigenvecs)
 
 # csv persistance
+with open("out.csv", "w+") as f:
+    writer = csv.writer(f)
+    for i in range(N):
+        row = [Y[:,0][i], Y[:,1][i], f_list[i]]
+        writer.writerow(row)
 
-# visualization
