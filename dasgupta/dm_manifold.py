@@ -6,7 +6,8 @@ from sklearn import manifold, datasets
 from skimage.measure import compare_ssim  as ssim
 
 from scipy.linalg import eigh as largest_eigh
-
+from math import sqrt
+from __future__ import division
 import numpy as np
 import itertools
 import os, sys, cv2
@@ -21,9 +22,10 @@ def get_xy(i, eigval, eigvec):
     the i-th data point
     """
     # 2nd eigenvalue, index = 1
-    x =
+    x = sqrt(eigval[1]) * eigvec[:,1][i]
     # 1st eigenvalue
-    y =
+    y = sqrt(eigval[0]) * eigvec[:,0][i]
+    print x, y
     return x, y
 
 
@@ -60,13 +62,21 @@ for i_tuple in itertools.combinations(range(len(f_list)), 2):
     dm[j][i] = s
 
 
-# get eigenvectors and eigenvalues
+# classical MDS
 N = len(f_list)
 k = 2   # top 2 vectors for 2D vis
 
-# eigen- in ascending order
-eigenvals, eigenvecs = largest_eigh(dm, eigvals = (N - k, N - 1))
 
+# get centering matrix
+
+
+
+
+# eigen- in ascending order
+#eigenvals, eigenvecs = largest_eigh(dm, eigvals = (N - k, N - 1))
+
+for i in range(N):
+    get_xy(i, eigenvals, eigenvecs)
 
 # csv persistance
 
