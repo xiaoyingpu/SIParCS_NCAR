@@ -40,11 +40,14 @@ for f in f_list:
 Y = manifold.Isomap(7, 2).fit_transform(X)
 
 # persist csv
-with open("out.csv", "w+") as f:
-    writer = csv.writer(f)
-    for i in range(len(Y[:,0])):
-        row = [Y[:,0][i], Y[:,1][i],f_list[i]]
-        writer.writerow(row)
+PERSISTENCE = False
+
+if PERSISTENCE:
+    with open("out.csv", "w+") as f:
+        writer = csv.writer(f)
+        for i in range(len(Y[:,0])):
+            row = [Y[:,0][i], Y[:,1][i],f_list[i]]
+            writer.writerow(row)
 
 
 # plotting the result
