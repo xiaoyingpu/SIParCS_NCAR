@@ -58,7 +58,7 @@ res@tiMainString = fn
 
 ;; --------panel-ing
 res@gsnDraw = False
-res@gsnDraw = False
+res@gsnFrame = False
 
 plot = gsn_csm_contour_map(wks, PSL, res)
 mam = gsn_csm_contour_map(wks, MAM, res)
