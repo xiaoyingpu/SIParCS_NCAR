@@ -15,6 +15,10 @@ do i=0, n_files-1
     f = addfile(full_path, "r")
     print("--------- before -------")
     printVarSummary(f->$var$)
+
+
+    ;; TODO what are good grid sizes?
+    ;; TODO regional; ENSO, etc.
     psl = f->psl_trends_ann
     LAT = fspan(-90, 90, 72)
     LON = fspan(0, 357.5, 144)
