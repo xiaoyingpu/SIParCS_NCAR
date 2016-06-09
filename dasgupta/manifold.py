@@ -27,9 +27,15 @@ for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
         #lbl = re.findall(r"#\d+", f)
         lbl = f[6:10]
         # label_list.append(lbl[0][1:])              # regex!
-        label_list.append(f[2:7])
+        label_list.append(f.split("_",1)[0].split("-",1)[0])
 # change working directory
 os.chdir(sys.argv[1])
+
+
+# assign color code to model names
+
+
+
 
 for f in f_list:
     img = cv2.imread(f)
@@ -46,9 +52,10 @@ if PERSISTENCE:
     with open("out.csv", "w+") as f:
         writer = csv.writer(f)
         for i in range(len(Y[:,0])):
-            row = [Y[:,0][i], Y[:,1][i],f_list[i]]
+            row = [Y[:,0][i], Y[:,1][i],f_list[i], label_list[i]]   # filename, model name
             writer.writerow(row)
 
+n_models = len(set(label_list))
 
 # plotting the result
 #figure(1)
