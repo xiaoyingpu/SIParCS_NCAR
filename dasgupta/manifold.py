@@ -55,16 +55,29 @@ if PERSISTENCE:
             row = [Y[:,0][i], Y[:,1][i],f_list[i], label_list[i]]   # filename, model name
             writer.writerow(row)
 
-
+# categorize datapoints by model
 color_dic = category.get_color_dic(os.path.abspath("."))
 print(color_dic)
 
+df = {}
+for i in range(len(color_dic)):
+    df[i] = []
 
+for i in range(N):
+    index = color_dic[label_list[i]]
+    x = Y[:,0][i]
+    y = Y[:,1][i]
+    f = f_list[i]
+    df[index].append([x,y,f])
+print df[0]
 
 # plotting the result
 #figure(1)
 fig, ax = plt.subplots()
-ax.scatter(Y[:,0], Y[:,1])
+# ax.scatter(Y[:,0], Y[:,1])
+
+
+
 ann = []
 for i in range(len(label_list)):
     ann.append(ax.annotate(label_list[i], xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
