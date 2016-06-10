@@ -26,8 +26,6 @@ for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
     if (f.endswith(".tif") or f.endswith(".png")):
         f_list.append(f)
         #lbl = re.findall(r"#\d+", f)
-        lbl = f[6:10]
-        # label_list.append(lbl[0][1:])              # regex!
         label_list.append(category.model(f))
 # change working directory
 os.chdir(sys.argv[1])
@@ -42,7 +40,7 @@ for f in f_list:
 
 # running Isomap
 # 5 neighbours will be considered and reduction on a 2d space
-Y = manifold.Isomap(7, 2).fit_transform(X)
+Y = manifold.Isomap(5, 2).fit_transform(X)
 
 # persist csv
 PERSISTENCE = False

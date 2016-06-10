@@ -2,17 +2,19 @@ from __future__ import division
 import matplotlib
 matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
+from matplotlib.pylab import cm
 
 from sklearn import manifold, datasets
 from skimage.measure import compare_ssim  as ssim
 
 from scipy.linalg import eigh as largest_eigh
+import math
 from math import sqrt
 import numpy as np
 import itertools
 import os, sys, cv2, csv
 
-
+import category
 # replace the kNN, graph approach with a distance matrix,
 # SSIM as the distance metric
 # make sense????
@@ -47,7 +49,6 @@ for i_tuple in itertools.combinations(range(len(f_list)), 2):
     # not sparse anymore!!!!
     dm[i][j] = s
     dm[j][i] = s
-print dm
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
 k = 2   # top 2 vectors for 2D vis
@@ -70,11 +71,66 @@ Y = V.dot(L)
 
 # Y: (n, p) array, col is a dimension
 
+d = category.get_color_dic(os.path.abspath("."))
+df = {}
+
+for i in range(len(d)):
+    df[i] = []
+
+for i in range(N):
+    index = d[category.model(f_list[i])]
+    x = Y[:,0][i]
+    y = Y[:,1][i]
+    f = f_list[i]
+    df[index].append([x,y,f])
+
+
+for i in range(len(d)):
+    df[i] = np.array(df[i])
+
+
+
+fig, ax = plt.subplots()
+# ax.scatter(Y[:,0], Y[:,1])
+
+for i in range(len(d)):
+    ax.scatter(df[i][:,0], df[i][:,1], \
+            label = category.model(df[i][:,2][0]),\
+            color = cm.Dark2(i/float(len(d))))
+
+ann = []
+for i in range(N):
+    ann.append(ax.annotate(category.model(f_list[i]), xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
+mask = np.zeros(fig.canvas.get_width_height(), bool)
+
+plt.tight_layout()
+plt.legend()
+# overlapping labels removal
+fig.canvas.draw()
+for a in ann:
+    bbox = a.get_window_extent()
+    x0 = int(bbox.x0)
+    x1 = int(math.ceil(bbox.x1))
+    y0 = int(bbox.y0)
+    y1 = int(math.ceil(bbox.y1))
+
+    s = np.s_[x0:x1+1, y0:y1+1]
+    if np.any(mask[s]):
+        a.set_visible(False)
+        if "IPSL" in a.get_text():
+            a.set_visible(True)
+    else:
+        mask[s] = True
+plt.show()
+
+
 
 # csv persistance
-with open("out.csv", "w+") as f:
-    writer = csv.writer(f)
-    for i in range(N):
-        row = [Y[:,0][i], Y[:,1][i], f_list[i]]
-        writer.writerow(row)
+DO_PERSISTENCE = False
+if DO_PERSISTENCE:
+    with open("out.csv", "w+") as f:
+        writer = csv.writer(f)
+        for i in range(N):
+            row = [Y[:,0][i], Y[:,1][i], f_list[i]]
+            writer.writerow(row)
 
