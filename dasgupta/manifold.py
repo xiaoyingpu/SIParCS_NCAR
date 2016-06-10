@@ -11,7 +11,7 @@ from sklearn import manifold, datasets
 import os, sys, cv2, re
 
 import csv
-
+import category
 
 if len(sys.argv) != 2:
     print("Usage: frameworkpython manifold.py <img dir>")
@@ -35,7 +35,7 @@ os.chdir(sys.argv[1])
 # assign color code to model names
 
 
-
+N = len(f_list)
 
 for f in f_list:
     img = cv2.imread(f)
@@ -55,7 +55,11 @@ if PERSISTENCE:
             row = [Y[:,0][i], Y[:,1][i],f_list[i], label_list[i]]   # filename, model name
             writer.writerow(row)
 
-n_models = len(set(label_list))
+
+color_dic = category.get_color_dic(os.path.abspath("."))
+print(color_dic)
+
+
 
 # plotting the result
 #figure(1)
@@ -67,6 +71,8 @@ for i in range(len(label_list)):
 mask = np.zeros(fig.canvas.get_width_height(), bool)
 
 plt.tight_layout()
+
+# overlapping labels removal
 fig.canvas.draw()
 for a in ann:
     bbox = a.get_window_extent()
