@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('tkagg')
 
 import matplotlib.pyplot as plt
+from matplotlib.pylab import cm
 import numpy as np
 import math
 from sklearn import manifold, datasets
@@ -27,12 +28,10 @@ for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
         #lbl = re.findall(r"#\d+", f)
         lbl = f[6:10]
         # label_list.append(lbl[0][1:])              # regex!
-        label_list.append(f.split("_",1)[0].split("-",1)[0])
+        label_list.append(category.model(f))
 # change working directory
 os.chdir(sys.argv[1])
 
-
-# assign color code to model names
 
 
 N = len(f_list)
@@ -57,7 +56,6 @@ if PERSISTENCE:
 
 # categorize datapoints by model
 color_dic = category.get_color_dic(os.path.abspath("."))
-print(color_dic)
 
 df = {}
 for i in range(len(color_dic)):
@@ -69,14 +67,22 @@ for i in range(N):
     y = Y[:,1][i]
     f = f_list[i]
     df[index].append([x,y,f])
-print df[0]
+
+# convert to np array
+for i in range(len(color_dic)):
+    df[i] = np.array(df[i])
+
+
 
 # plotting the result
 #figure(1)
 fig, ax = plt.subplots()
 # ax.scatter(Y[:,0], Y[:,1])
 
-
+for i in range(len(color_dic)):
+    ax.scatter(df[i][:,0], df[i][:,1], \
+            label = category.model(df[i][:,2][0]),\
+            color = cm.Dark2(i/float(len(color_dic))))
 
 ann = []
 for i in range(len(label_list)):
@@ -84,7 +90,7 @@ for i in range(len(label_list)):
 mask = np.zeros(fig.canvas.get_width_height(), bool)
 
 plt.tight_layout()
-
+plt.legend()
 # overlapping labels removal
 fig.canvas.draw()
 for a in ann:
