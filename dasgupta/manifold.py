@@ -43,7 +43,7 @@ for f in f_list:
 Y = manifold.Isomap(5, 2).fit_transform(X)
 
 # persist csv
-PERSISTENCE = False
+PERSISTENCE = True
 
 if PERSISTENCE:
     with open("out.csv", "w+") as f:
