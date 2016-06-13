@@ -38,6 +38,8 @@ def scatter(x, colors):
     # We create a scatter plot.
     f = plt.figure(figsize=(8, 8))
     ax = plt.subplot(aspect='equal')
+    print(type(colors))
+    print(colors)
     sc = ax.scatter(x[:,0], x[:,1], lw=0, s=40,
                     c=palette[colors.astype(np.int)])
     plt.xlim(-25, 25)
@@ -45,8 +47,6 @@ def scatter(x, colors):
     ax.axis('off')
     ax.axis('tight')
 
-    for i in range(10):
-        print(colors.astype(np.int))
     # We add the labels for each digit.
     txts = []
     for i in range(10):

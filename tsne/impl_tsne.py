@@ -33,12 +33,27 @@ sns.set_context("notebook", font_scale=1.5,
 import os, sys, cv2
 
 
-def model(s):
+
+def get_model(s):
     return s.split("_", 1)[0].split("-",1)[0]
 
-def scatter(x) #, colors):
+def color_index(f_list):
+    y = []
+    d = {}
+    i = 0
+    for f in f_list:
+        m = get_model(f)
+        if m not in d:
+            d[m] = i
+            i += 1
+        y.append(d[m])
+    print y
+    return y
+
+
+def scatter(x, colors):
     # We choose a color palette with seaborn.
-    palette = np.array(sns.color_palette("hls", 10))
+    palette = np.array(sns.color_palette("hls", 25))
 
     # We create a scatter plot.
     f = plt.figure(figsize=(8, 8))
@@ -75,9 +90,7 @@ X = []
 for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
     if (f.endswith(".tif") or f.endswith(".png")):
         f_list.append(f)
-        #lbl = re.findall(r"#\d+", f)
-        label_list.append(model(f))
-# change working directory
+        label_list.append(get_model(f))
 os.chdir(sys.argv[1])
 
 
@@ -87,7 +100,7 @@ N = len(f_list)
 for f in f_list:
     img = cv2.imread(f)
     X.append(list(img.flat))
-
+y = np.hstack(color_index(f_list))
 # We first reorder the data points according to the handwritten numbers.
 #X = np.vstack([digits.data[digits.target==i]
 #                   for i in range(10)])
@@ -97,5 +110,5 @@ for f in f_list:
 digits_proj = TSNE(random_state=RS).fit_transform(X)
 
 
-scatter(digits_proj) #, y)
+scatter(digits_proj, y)
 plt.show()
