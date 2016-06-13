@@ -30,8 +30,13 @@ sns.set_palette('muted')
 sns.set_context("notebook", font_scale=1.5,
                 rc={"lines.linewidth": 2.5})
 
+import os, sys, cv2
 
-def scatter(x, colors):
+
+def model(s):
+    return s.split("_", 1)[0].split("-",1)[0]
+
+def scatter(x) #, colors):
     # We choose a color palette with seaborn.
     palette = np.array(sns.color_palette("hls", 10))
 
@@ -45,34 +50,52 @@ def scatter(x, colors):
     ax.axis('off')
     ax.axis('tight')
 
-    for i in range(10):
-        print(colors.astype(np.int))
     # We add the labels for each digit.
     txts = []
-    for i in range(10):
-        # Position of each label.
-        xtext, ytext = np.median(x[colors == i, :], axis=0)
-        txt = ax.text(xtext, ytext, str(i), fontsize=24)
-        txt.set_path_effects([
-            PathEffects.Stroke(linewidth=5, foreground="w"),
-            PathEffects.Normal()])
-        txts.append(txt)
+    #for i in range(10):
+    #    # Position of each label.
+    #    xtext, ytext = np.median(x[colors == i, :], axis=0)
+    #    txt = ax.text(xtext, ytext, str(i), fontsize=24)
+    #    txt.set_path_effects([
+    #        PathEffects.Stroke(linewidth=5, foreground="w"),
+    #        PathEffects.Normal()])
+    #    txts.append(txt)
 
     return f, ax, sc, txts
 
 
-digits = load_digits()
-digits.data.shape
+if len(sys.argv) != 2:
+    print("Usage: frameworkpython impl_tsne.py <img dir>")
+    exit()
 
+f_list = []
+label_list = []
+X = []
+
+for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
+    if (f.endswith(".tif") or f.endswith(".png")):
+        f_list.append(f)
+        #lbl = re.findall(r"#\d+", f)
+        label_list.append(model(f))
+# change working directory
+os.chdir(sys.argv[1])
+
+
+
+N = len(f_list)
+
+for f in f_list:
+    img = cv2.imread(f)
+    X.append(list(img.flat))
 
 # We first reorder the data points according to the handwritten numbers.
-X = np.vstack([digits.data[digits.target==i]
-                   for i in range(10)])
-y = np.hstack([digits.target[digits.target==i]
-                   for i in range(10)])
+#X = np.vstack([digits.data[digits.target==i]
+#                   for i in range(10)])
+#y = np.hstack([digits.target[digits.target==i]
+#                   for i in range(10)])
 
 digits_proj = TSNE(random_state=RS).fit_transform(X)
 
 
-scatter(digits_proj, y)
+scatter(digits_proj) #, y)
 plt.show()
