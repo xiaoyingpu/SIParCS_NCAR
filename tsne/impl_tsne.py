@@ -48,7 +48,7 @@ def color_index(f_list):
             d[m] = i
             i += 1
         y.append(d[m])
-    return y
+    return y, d
 
 
 def scatter(x):
@@ -59,7 +59,7 @@ def scatter(x):
     f = plt.figure(figsize=(8, 8))
     ax = plt.subplot(aspect='equal')
     for i in range(len(x)):
-        ax.scatter(x[i][:,0], x[0][:,1], lw=0, s=40,
+        ax.scatter(x[i][:,0], x[i][:,1], lw=0, s=40,
                     c = palette[i],
                     label = x[i][:,2][0])
     plt.xlim(-25, 25)
@@ -80,7 +80,7 @@ def scatter(x):
     #        PathEffects.Normal()])
     #    txts.append(txt)
 
-    return f, ax, sc, txts
+    #return f, ax, sc, txts
 
 
 if len(sys.argv) != 2:
@@ -121,7 +121,8 @@ for i_tuple in itertools.combinations(range(len(f_list)), 2):
 #    X.append(list(img.flat))
 
 # color dictionary: model name -> color code
-y = np.hstack(color_index(f_list))
+y, d = color_index(f_list)
+y = np.hstack(y)
 # We first reorder the data points according to the handwritten numbers.
 #X = np.vstack([digits.data[digits.target==i]
 #                   for i in range(10)])
@@ -133,19 +134,20 @@ digits_proj = TSNE(random_state=RS, metric="precomputed").fit_transform(X)
 
 # build data frame:
 df = {}
-for i in range(len(y)):
+for i in range(len(d)):
     df[i] = []
 
 for i in range(N):
-    m = get_model(f_list(i))
-    index = y[m]
-    x = digits_proj[:,0]
-    y = digits_proj[:,1]
-    df[index] = append([x,y,m])
+    m = get_model(f_list[i])
+    index = d[m]
+    x = digits_proj[:,0][i]
+    y = digits_proj[:,1][i]
+    df[index].append([x,y,m])
 
-for i in range(len(y)):
+for i in range(len(d)):
     df[i] = np.array(df[i])
 
-scatter(df, y)
+print(df[0])
+scatter(df)
 plt.show()
 

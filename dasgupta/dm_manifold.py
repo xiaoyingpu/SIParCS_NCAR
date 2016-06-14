@@ -19,6 +19,14 @@ import category
 # SSIM as the distance metric
 # make sense????
 
+import seaborn as sns
+sns.set_style('darkgrid')
+sns.set_palette('muted')
+sns.set_context("notebook", font_scale=1.5,
+                rc={"lines.linewidth": 2.5})
+
+import time
+start = time.clock()
 
 if len(sys.argv) != 2:
     print("Usage: frameworkpython dm_manifold.py <img dir>")
@@ -52,7 +60,8 @@ for i_tuple in itertools.combinations(range(len(f_list)), 2):
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
 k = 2   # top 2 vectors for 2D vis
-
+end = time.clock()
+print("Building distance matrix: {}".format(end-start))
 
 # centering matrix
 H = np.eye(N) - np.ones((N, N))/N
@@ -68,6 +77,11 @@ w, = np.where(evals > 0)
 L = np.diag(np.sqrt(evals[w]))
 V = evecs[:,w]
 Y = V.dot(L)
+
+
+eigen = time.clock()
+print("Finding eigenvectors: {}".format(eigen - end))
+
 
 # Y: (n, p) array, col is a dimension
 
@@ -92,11 +106,12 @@ for i in range(len(d)):
 
 fig, ax = plt.subplots()
 # ax.scatter(Y[:,0], Y[:,1])
+palette = np.array(sns.color_palette("hls", 25))
 
 for i in range(len(d)):
     ax.scatter(df[i][:,0], df[i][:,1], \
             label = category.model(df[i][:,2][0]),\
-            color = cm.Dark2(i/float(len(d))))
+            color = palette[i])
 
 ann = []
 for i in range(N):
@@ -117,8 +132,9 @@ for a in ann:
     s = np.s_[x0:x1+1, y0:y1+1]
     if np.any(mask[s]):
         a.set_visible(False)
-        if "IPSL" in a.get_text():
-            a.set_visible(True)
+        # a hack to display IPSL
+        #if "IPSL" in a.get_text():
+        #    a.set_visible(True)
     else:
         mask[s] = True
 plt.show()
