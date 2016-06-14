@@ -142,11 +142,11 @@ plt.show()
 
 
 # csv persistance
-DO_PERSISTENCE = False
+DO_PERSISTENCE = True
 if DO_PERSISTENCE:
     with open("out.csv", "w+") as f:
         writer = csv.writer(f)
         for i in range(N):
-            row = [Y[:,0][i], Y[:,1][i], f_list[i]]
+            row = [Y[:,0][i], Y[:,1][i], category.model(f_list[i])]
             writer.writerow(row)
 
