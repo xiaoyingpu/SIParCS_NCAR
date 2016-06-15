@@ -28,35 +28,71 @@ sns.set_context("notebook", font_scale=1.5,
 import time
 start = time.clock()
 
+
+def get_csv_array(fname):
+    l = []
+    with open(fname) as f:
+        reader = csv.reader(f)
+        for row in reader:
+            string_row = row[0].split()
+            print string_row
+            l.append([float(i) for i in string_row])
+    return np.array(l)
+
+
+
+
 if len(sys.argv) != 2:
     print("Usage: frameworkpython dm_manifold.py <img dir>")
 
 f_list = []
 
-for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
-    if (f.endswith(".tif") or f.endswith(".png")):
-        f_list.append(f)
-# change working directory
-os.chdir(sys.argv[1])
 
-N = len(f_list)
-# distance matrix, n by n init to zeros
-dm = np.zeros((N, N))
+IS_TIF = False
+if IS_TIF:
+    for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
+        if (f.endswith(".tif") or f.endswith(".png")):
+            f_list.append(f)
+    # change working directory
+    os.chdir(sys.argv[1])
 
-for i_tuple in itertools.combinations(range(len(f_list)), 2):
-    i, j = i_tuple
-    img1 = cv2.imread(f_list[i])
-    img2 = cv2.imread(f_list[j])
-    # to grey scale
-    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+    N = len(f_list)
+    # distance matrix, n by n init to zeros
+    dm = np.zeros((N, N))
 
-    s = 1 - ssim(img1, img2)
+    for i_tuple in itertools.combinations(range(len(f_list)), 2):
+        i, j = i_tuple
+        img1 = cv2.imread(f_list[i])
+        img2 = cv2.imread(f_list[j])
+        # to grey scale
+        img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
-    # symmetric matrix!
-    # not sparse anymore!!!!
-    dm[i][j] = s
-    dm[j][i] = s
+        s = 1 - ssim(img1, img2)
+
+        # symmetric matrix!
+        # not sparse anymore!!!!
+        dm[i][j] = s
+        dm[j][i] = s
+else:
+    for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
+        if (f.endswith(".csv")):
+            f_list.append(f)
+    os.chdir(sys.argv[1])
+    N = len(f_list)
+    dm = np.zeros((N,N))
+
+    for i_tuple in itertools.combinations(range(len(f_list)), 2):
+        i, j = i_tuple
+        print i , j
+        i_dat = get_csv_array(f_list[i])
+        j_dat = get_csv_array(f_list[j])
+
+        s = 1-ssim(i_dat, j_dat)
+
+        dm[i][j] = s
+        dm[j][i] = s
+
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
 k = 2   # top 2 vectors for 2D vis
