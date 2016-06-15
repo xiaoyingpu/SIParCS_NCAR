@@ -11,7 +11,8 @@ var = "psl_trends_mam"
 n_files = dimsizes(f_list)
 
 
-
+;; for visualization
+; workstation and resources
 werkstation = gsn_open_wks("x11", "panel")
 res = True
 
