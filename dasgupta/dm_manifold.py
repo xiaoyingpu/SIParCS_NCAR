@@ -39,65 +39,73 @@ def get_csv_array(fname):
     return np.array(l)
 
 
+def get_f_list(img_dir):
+    f_list = []
+    IS_IMG = False
+    for f in os.listdir(img_dir):
+        if f.endswith(".tif") or f.endswith(".png"):
+            f_list.append(f)
+            IS_IMG = True
+        elif f.endswith(".csv"):
+            f_list.append(f)
+    return f_list, IS_IMG
 
+
+
+def get_distance_matrix(img_dir):
+    f_list, IS_IMG = get_f_list(img_dir)
+
+    os.chdir(img_dir)
+    N = len(f_list)
+    dm = np.zeros((N, N))
+    if IS_IMG:
+        # distance matrix, n by n init to zeros
+        for i_tuple in itertools.combinations(range(len(f_list)), 2):
+            i, j = i_tuple
+            img1 = cv2.imread(f_list[i])
+            img2 = cv2.imread(f_list[j])
+            # to grey scale
+            img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+            img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+            s = 1 - ssim(img1, img2)    # so that distance makes sense
+
+            # symmetric matrix!
+            # not sparse anymore!!!!
+            dm[i][j] = s
+            dm[j][i] = s
+    else:
+        for i_tuple in itertools.combinations(range(len(f_list)), 2):
+            i, j = i_tuple
+            i_dat = get_csv_array(f_list[i])
+            j_dat = get_csv_array(f_list[j])
+
+            s = 1-ssim(i_dat, j_dat)
+
+            dm[i][j] = s
+            dm[j][i] = s
+    return dm
+
+# -----------main-----------
 
 if len(sys.argv) != 2:
     print("Usage: frameworkpython dm_manifold.py <img dir>")
 
-f_list = []
+f_list, not_used= get_f_list(sys.argv[1])
+N = len(f_list)
 
-
-IS_TIF = False
-if IS_TIF:
-    for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
-        if (f.endswith(".tif") or f.endswith(".png")):
-            f_list.append(f)
-    # change working directory
-    os.chdir(sys.argv[1])
-
-    N = len(f_list)
-    # distance matrix, n by n init to zeros
-    dm = np.zeros((N, N))
-
-    for i_tuple in itertools.combinations(range(len(f_list)), 2):
-        i, j = i_tuple
-        img1 = cv2.imread(f_list[i])
-        img2 = cv2.imread(f_list[j])
-        # to grey scale
-        img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-        img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-
-        s = 1 - ssim(img1, img2)
-
-        # symmetric matrix!
-        # not sparse anymore!!!!
-        dm[i][j] = s
-        dm[j][i] = s
+# note: the working dir will be changed if the first
+# branch is taken
+if not os.path.isfile("dm.txt"):
+    # need to compute from scratch
+    dm = get_distance_matrix(sys.argv[1])
+    # since computing distance matrix is expensive
+    # save a copy for later use
+    with open ("dm.txt", "w") as f:
+        np.savetxt(f, dm)
 else:
-    for f in os.listdir(sys.argv[1]):    # csv dir as command line arg
-        if (f.endswith(".csv")):
-            f_list.append(f)
-    os.chdir(sys.argv[1])
-    N = len(f_list)
-    dm = np.zeros((N,N))
-
-    for i_tuple in itertools.combinations(range(len(f_list)), 2):
-        i, j = i_tuple
-        i_dat = get_csv_array(f_list[i])
-        j_dat = get_csv_array(f_list[j])
-
-        s = 1-ssim(i_dat, j_dat)
-
-        dm[i][j] = s
-        dm[j][i] = s
-
-# since computing distance matrix is expensive
-# save a copy for later use
-
-with open ("dm.txt", "w") as f:
-    np.savetxt(f, dm)
-
-exit()
+    # read the distance matrix
+    dm = np.loadtxt("dm.txt")
 
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
@@ -127,9 +135,8 @@ print("Finding eigenvectors: {}".format(eigen - end))
 
 # Y: (n, p) array, col is a dimension
 
-d = category.get_color_dic(os.path.abspath("."))
+d = category.get_color_dic(os.path.abspath(sys.argv[1]))
 df = {}
-print d
 for i in range(len(d)):
     df[i] = []
 
