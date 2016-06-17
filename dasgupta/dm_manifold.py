@@ -160,38 +160,40 @@ for i in range(len(d)):
 
 fig, ax = plt.subplots()
 # ax.scatter(Y[:,0], Y[:,1])
-palette = np.array(sns.color_palette("cubehelix", len(d)))
-for i in range(len(d)):
-    lbl = category.model(df[i][:,2][0])
-    ax.scatter(df[i][:,0], df[i][:,1], \
-            label = lbl,\
-            color = palette[i])
-    print i, palette[i], lbl
+palette = np.array(sns.color_palette("hls", len(d)))
+#for i in range(len(d)):
+#    lbl = category.model(df[i][:,2][0])
+#    ax.scatter(df[i][:,0], df[i][:,1], \
+#            label = lbl,\
+#            color = palette[i])
+#    print i, palette[i], lbl
 
-ann = []
-for i in range(N):
-    ann.append(ax.annotate(category.model(f_list[i]), xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
-mask = np.zeros(fig.canvas.get_width_height(), bool)
-
-plt.tight_layout()
-plt.legend()
-# overlapping labels removal
-fig.canvas.draw()
-for a in ann:
-    bbox = a.get_window_extent()
-    x0 = int(bbox.x0)
-    x1 = int(math.ceil(bbox.x1))
-    y0 = int(bbox.y0)
-    y1 = int(math.ceil(bbox.y1))
-
-    s = np.s_[x0:x1+1, y0:y1+1]
-    if np.any(mask[s]):
-        a.set_visible(False)
-        # a hack to display IPSL
-        #if "IPSL" in a.get_text():
-        #    a.set_visible(True)
-    else:
-        mask[s] = True
+ax.scatter(-0.038728473132,0.0194969157674, label = "x", color=palette[8])
+print df[8][:,0],df[8][:,1]
+#ann = []
+#for i in range(N):
+#    ann.append(ax.annotate(category.model(f_list[i]), xy = (list(Y[:,0])[i], list(Y[:,1])[i])))
+#mask = np.zeros(fig.canvas.get_width_height(), bool)
+#
+#plt.tight_layout()
+#plt.legend()
+## overlapping labels removal
+#fig.canvas.draw()
+#for a in ann:
+#    bbox = a.get_window_extent()
+#    x0 = int(bbox.x0)
+#    x1 = int(math.ceil(bbox.x1))
+#    y0 = int(bbox.y0)
+#    y1 = int(math.ceil(bbox.y1))
+#
+#    s = np.s_[x0:x1+1, y0:y1+1]
+#    if np.any(mask[s]):
+#        a.set_visible(False)
+#        # a hack to display IPSL
+#        #if "IPSL" in a.get_text():
+#        #    a.set_visible(True)
+#    else:
+#        mask[s] = True
 plt.show()
 
 
