@@ -35,7 +35,6 @@ def get_csv_array(fname):
         reader = csv.reader(f)
         for row in reader:
             string_row = row[0].split()
-            print string_row
             l.append([float(i) for i in string_row])
     return np.array(l)
 
@@ -75,7 +74,7 @@ if IS_TIF:
         dm[i][j] = s
         dm[j][i] = s
 else:
-    for f in os.listdir(sys.argv[1]):    # img dir as commandline arg
+    for f in os.listdir(sys.argv[1]):    # csv dir as command line arg
         if (f.endswith(".csv")):
             f_list.append(f)
     os.chdir(sys.argv[1])
@@ -84,7 +83,6 @@ else:
 
     for i_tuple in itertools.combinations(range(len(f_list)), 2):
         i, j = i_tuple
-        print i , j
         i_dat = get_csv_array(f_list[i])
         j_dat = get_csv_array(f_list[j])
 
@@ -92,6 +90,14 @@ else:
 
         dm[i][j] = s
         dm[j][i] = s
+
+# since computing distance matrix is expensive
+# save a copy for later use
+
+with open ("dm.txt", "w") as f:
+    np.savetxt(f, dm)
+
+exit()
 
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
@@ -123,7 +129,7 @@ print("Finding eigenvectors: {}".format(eigen - end))
 
 d = category.get_color_dic(os.path.abspath("."))
 df = {}
-
+print d
 for i in range(len(d)):
     df[i] = []
 

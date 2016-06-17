@@ -9,7 +9,7 @@ def get_color_dic(cwd):
     dic_model = {}
     model_color_n = 0
     for f in os.listdir(cwd):
-        if f.endswith(".nc") or f.endswith("tif"):
+        if f.endswith(".nc") or f.endswith("tif") or f.endswith(".csv"):
             m = model(f)
             if m not in dic_model:
                 dic_model[m] = model_color_n

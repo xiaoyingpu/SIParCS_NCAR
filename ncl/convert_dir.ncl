@@ -15,11 +15,11 @@ ret = systemfunc(cmd)
 do i=0, n_files - 1
     nc_file_path = dir + f_list(i) 
     f = addfile(nc_file_path, "r")
-    printVarSummary(f)
-    printVarSummary(f->psl_spatialmean_ann)
+    ;printVarSummary(f)
+    ;printVarSummary(f->psl_spatialmean_ann)
     psl := f->psl_spatialmean_ann
 
-    LAT = fspan(-90, 90, 90)
+    LAT = fspan(-80, 80, 80)
     LAT@unit = "degree_north"
     LON = fspan(0, 357.5, 144)
     LON@unit = "degree_east"
