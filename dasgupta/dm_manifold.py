@@ -91,6 +91,11 @@ def get_distance_matrix(img_dir):
 if len(sys.argv) != 2:
     print("Usage: frameworkpython dm_manifold.py <img dir>")
 
+script_path = os.path.abspath(".")
+
+
+
+
 f_list, not_used= get_f_list(sys.argv[1])
 N = len(f_list)
 
@@ -155,12 +160,13 @@ for i in range(len(d)):
 
 fig, ax = plt.subplots()
 # ax.scatter(Y[:,0], Y[:,1])
-palette = np.array(sns.color_palette("hls", 25))
-
+palette = np.array(sns.color_palette("cubehelix", len(d)))
 for i in range(len(d)):
+    lbl = category.model(df[i][:,2][0])
     ax.scatter(df[i][:,0], df[i][:,1], \
-            label = category.model(df[i][:,2][0]),\
+            label = lbl,\
             color = palette[i])
+    print i, palette[i], lbl
 
 ann = []
 for i in range(N):
@@ -191,9 +197,10 @@ plt.show()
 
 
 # csv persistance
-DO_PERSISTENCE = False
+DO_PERSISTENCE = True
 if DO_PERSISTENCE:
-    with open("out.csv", "w+") as f:
+    os.chdir(os.path.join(script_path, "csv"))
+    with open("ssim_cmip5_with_label.csv", "w+") as f:
         writer = csv.writer(f)
         writer.writerow(["x", "y","label"])
         for i in range(N):
