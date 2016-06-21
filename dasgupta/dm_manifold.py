@@ -7,6 +7,7 @@ from matplotlib.pylab import cm
 from sklearn import manifold, datasets
 from skimage.measure import compare_ssim  as ssim
 
+
 from scipy.linalg import eigh as largest_eigh
 import math
 from math import sqrt
@@ -103,6 +104,7 @@ N = len(f_list)
 # branch is taken
 if not os.path.isfile("dm.txt"):
     # need to compute from scratch
+    print("Generating distance matrix")
     dm = get_distance_matrix(sys.argv[1])
     # since computing distance matrix is expensive
     # save a copy for later use
@@ -110,59 +112,64 @@ if not os.path.isfile("dm.txt"):
         np.savetxt(f, dm)
 else:
     # read the distance matrix
+    print("Loading distance matrix from file")
     dm = np.loadtxt("dm.txt")
 
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
-k = 2   # top 2 vectors for 2D vis
-end = time.clock()
-print("Building distance matrix: {}".format(end-start))
+# Classical MDS assumes Euclidean distances. So this is not applicable for direct dissimilarity ratings. -wiki
 
-# centering matrix
-H = np.eye(N) - np.ones((N, N))/N
-tau = -0.5 * H.dot(dm ** 2).dot(H)
-
-# eigen- in descending order
-evals, evecs = largest_eigh(tau)
-idx = np.argsort(evals)[::-1]
-evals = evals[idx]
-evecs = evecs[:,idx]
-
-w, = np.where(evals > 0)
-L = np.diag(np.sqrt(evals[w]))
-V = evecs[:,w]
-Y = V.dot(L)
-
-
-eigen = time.clock()
-print("Finding eigenvectors: {}".format(eigen - end))
+#k = 2   # top 2 vectors for 2D vis
+#end = time.clock()
+#print("Building distance matrix: {}".format(end-start))
+#
+## centering matrix
+#H = np.eye(N) - np.ones((N, N))/N
+#tau = -0.5 * H.dot(dm ** 2).dot(H)
+#
+## eigen- in descending order
+#evals, evecs = largest_eigh(tau)
+#idx = np.argsort(evals)[::-1]
+#evals = evals[idx]
+#evecs = evecs[:,idx]
+#
+#w, = np.where(evals > 0)
+#L = np.diag(np.sqrt(evals[w]))
+#V = evecs[:,w]
+#Y = V.dot(L)
+#
+#
+#eigen = time.clock()
+#print("Finding eigenvectors: {}".format(eigen - end))
 
 
 # Y: (n, p) array, col is a dimension
+Y = manifold.MDS(n_components=2, dissimilarity='precomputed').fit_transform(dm)
+Y = np.array(Y)
 
 d = category.get_color_dic(os.path.abspath(sys.argv[1]))
 df = {}
 for i in range(len(d)):
     df[i] = []
-
+print N
 for i in range(N):
     index = d[category.model(f_list[i])]
     x = Y[:,0][i]
     y = Y[:,1][i]
     f = f_list[i]
     df[index].append([x,y,f])
+    print [x, y, f]
 
 
 for i in range(len(d)):
     df[i] = np.array(df[i])
-
 
 # ---------- plotting ------------
 f_persist = "csv/ssim_cmip5_with_label.csv"
 csv_path = os.path.join(script_path, f_persist)
 print csv_path
 if os.path.isfile(csv_path):
-    print "csv from last iter found"
+    print "csv from last iter found, but not reading"
 
 
 fig, ax = plt.subplots()
@@ -211,8 +218,8 @@ if DO_PERSISTENCE:
     os.chdir(os.path.join(script_path, "csv"))
     with open("ssim_cmip5_with_label.csv", "w+") as f:
         writer = csv.writer(f)
-        writer.writerow(["x", "y","label"])
+        writer.writerow(["x", "y","label", "fname"])
         for i in range(N):
-            row = [Y[:,0][i], Y[:,1][i], category.model(f_list[i])]
+            row = [Y[:,0][i], Y[:,1][i], category.model(f_list[i]), f_list[i]]
             writer.writerow(row)
 
