@@ -1,5 +1,22 @@
 from gurobipy import *
 import itertools
+from scipy.special import comb
+import numpy as np
+
+
+
+def get_mtrx_L(n):
+
+
+
+def get_mtrx_Q(n):
+    size_r = comb(n, 2, exact = True) * 2
+
+
+
+
+
+
 
 m = Model("MIQP")
 
@@ -26,12 +43,14 @@ m.update()
 # set objective
 # quad expression and minimize cost function
 quad_expr = None
+for i in range():
+    for j in range():
 
-m.setObjective(quad_expr,GRB.MINIMIZE)
+#m.setObjective(quad_expr,GRB.MINIMIZE)
 
 
 
 
 
 # add constraints
-m.optimize()
+#m.optimize()
