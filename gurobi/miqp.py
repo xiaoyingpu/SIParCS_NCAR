@@ -5,12 +5,16 @@ import numpy as np
 
 
 
-def get_mtrx_L(n):
-
-
-
-def get_mtrx_Q(n):
-    size_r = comb(n, 2, exact = True) * 2
+#def get_mtrx_L(n):
+#    I_n = np.identity(n)
+#    ones = np.ones(n)
+#    return n * I_n - ones
+#
+#
+#def get_mtrx_Q(n):
+#    size_r = comb(n, 2, exact = True) * 2
+#    L = get_mtrx_L(n)
+#
 
 
 
