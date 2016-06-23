@@ -44,6 +44,8 @@ for tupl in itertools.combinations(range(0, 4),2):
     i, j = tupl
     r.append(m.addVar(vtype = GRB.BINARY, obj = 1.0, name = "r_{},{}".format(i, j) ))
 
+# z is a vector with 2 * n + n-choose-2 dimension
+# for the constraints
 z = x + y + r
 
 m.update()
@@ -55,11 +57,10 @@ quad_expr = QuadExpr()
 
 for i in range(n_item):
     for j in range(i, n_item):
-        #print "{}, {}".format(i,j)
-        quad_expr.add()
+        d = get_distance(x[i], y[i], x[j], y[j])
+        quad_expr.add(d)
 
-
-#m.setObjective(quad_expr,GRB.MINIMIZE)
+m.setObjective(quad_expr,GRB.MINIMIZE)
 
 
 
