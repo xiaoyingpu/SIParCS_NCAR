@@ -31,7 +31,7 @@ def get_whij(dim_i, dim_j):
     assuming dim_i < dim_j
     because of the p, q permutation ordering
     """
-    return -0.5 * (dim_i - dim_j)
+    return -0.5 * (dim_i + dim_j)
 
 
 
@@ -50,11 +50,9 @@ for i in range(n_item):
 
 for tupl in itertools.combinations(range(0, 3),2):
     i, j = tupl
-    print tupl
     if i < j:
         r.append(m.addVar(vtype = GRB.BINARY, obj = 1.0, name = "r[{}][{}]".format(i, j) ))
 
-print len(r)
 # z is a vector with 2 * n + n-choose-2 dimension
 # for the constraints
 z = x + y + r
@@ -108,7 +106,7 @@ for i in range(3):
     d_y.append(hij)
 
 
-# for matrix c * z < b, constraint #5
+# for submatrix C * z <= b, constraint #5
 for i in range(2):
     lhs = np.dot(C_x[i], x)
     m.addConstr(lhs, GRB.LESS_EQUAL, c[i])
@@ -116,12 +114,17 @@ for i in range(2):
     lhs = np.dot(C_y[i], y)
     m.addConstr(lhs, GRB.LESS_EQUAL, c[i])
 
+# for submatrix D * z <= b
+for i in range(3):
+    lhs = np.dot(D_x[i], x + r)
+    m.addConstr(lhs, GRB.LESS_EQUAL, d_x[i])
+    lhs = np.dot(D_y[i], y + r)
+    m.addConstr(lhs, GRB.LESS_EQUAL, d_y[i])
 
-
-
+# for boundary conditions
 
 m.optimize()
 
-for v in m.getVars():
-    print("{} = {}".format(v.varname, v.x))
-print(m.objVal)
+#for v in m.getVars():
+#    print("{} = {}".format(v.varname, v.x))
+#print(m.objVal)
