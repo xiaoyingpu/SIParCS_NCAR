@@ -23,31 +23,33 @@ def get_distance(xi, yi, xj, yj):
     those x and y's are gurobi Var's.
     returns a QuadExpr
     """
-    return (xi - xj) * (xi - xj) + (yi - yj) * (yi - yj)
-
-
-
+    # just in case
+    return xi * xi + xj * xj - 2 * xi * xj + yi * yi + yj * yj - 2 * yi * yj
 
 m = Model("MIQP")
 
 n_item = 3
+M = 10000   #large constant
 x = []
 y = []
 r = []
 NEGATIVE = -10
 for i in range(n_item):
-    x.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="x_{}".format(i)))
-    y.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="y_{}".format(i)))
+    x.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="x[{}]".format(i)))
+    y.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="y[{}]".format(i)))
 
 
-for tupl in itertools.combinations(range(0, 4),2):
+for tupl in itertools.combinations(range(0, 3),2):
     i, j = tupl
-    r.append(m.addVar(vtype = GRB.BINARY, obj = 1.0, name = "r_{},{}".format(i, j) ))
+    print tupl
+    if i < j:
+        r.append(m.addVar(vtype = GRB.BINARY, obj = 1.0, name = "r[{}][{}]".format(i, j) ))
 
+print len(r)
 # z is a vector with 2 * n + n-choose-2 dimension
 # for the constraints
 z = x + y + r
-
+# update variables
 m.update()
 
 
@@ -59,12 +61,23 @@ for i in range(n_item):
     for j in range(i, n_item):
         d = get_distance(x[i], y[i], x[j], y[j])
         quad_expr.add(d)
-
 m.setObjective(quad_expr,GRB.MINIMIZE)
 
 
-
-
-
 # add constraints
+
+w = []
+h = []
+
+for i in range(3):
+    w.append(2)
+    h.append(2)
+
+C_x = [[1, -1, 0], [0, 1, -1]]
+C_y = [[0, 1, -1], [-1, 0, 1]]
+
+D_x = [[],[]]
+D_y = [[],[]]
+
+
 #m.optimize()
