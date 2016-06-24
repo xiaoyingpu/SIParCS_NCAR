@@ -31,7 +31,7 @@ def get_whij(dim_i, dim_j):
     assuming dim_i < dim_j
     because of the p, q permutation ordering
     """
-    return -0.5 * (dim_i + dim_j)
+    return -0.5 * (dim_i - dim_j)
 
 
 
@@ -39,13 +39,15 @@ m = Model("MIQP")
 
 n_item = 3
 M = 10000   #large constant
+LB = 0
+UB = 20
+
 x = []
 y = []
 r = []
-NEGATIVE = -10
 for i in range(n_item):
-    x.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="x[{}]".format(i)))
-    y.append(m.addVar(lb=NEGATIVE, ub = GRB.INFINITY, obj = 1.0, name="y[{}]".format(i)))
+    x.append(m.addVar(lb=LB, ub = UB, obj = 1.0, name="x[{}]".format(i)))
+    y.append(m.addVar(lb=LB, ub = UB, obj = 1.0, name="y[{}]".format(i)))
 
 
 for tupl in itertools.combinations(range(0, 3),2):
@@ -100,8 +102,8 @@ d_y = []
 
 for i in range(3):
     # get the real hight and width <- same for all models anyways....
-    wij = get_whij(2, 2)    #TODO hard-coded
-    hij = get_whij(2, 2)
+    wij = get_whij(1, 1)    #TODO hard-coded
+    hij = get_whij(1, 1)
     d_x.append(wij)
     d_y.append(hij)
 
@@ -120,11 +122,8 @@ for i in range(3):
     m.addConstr(lhs, GRB.LESS_EQUAL, d_x[i])
     lhs = np.dot(D_y[i], y + r)
     m.addConstr(lhs, GRB.LESS_EQUAL, d_y[i])
-
-# for boundary conditions
-
 m.optimize()
 
-#for v in m.getVars():
-#    print("{} = {}".format(v.varname, v.x))
-#print(m.objVal)
+for v in m.getVars():
+    print("{} = {}".format(v.varname, v.x))
+print(m.objVal)
