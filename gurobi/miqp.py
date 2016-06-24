@@ -20,6 +20,7 @@ import numpy as np
 
 def get_distance(xi, yi, xj, yj):
     """
+    Euclidean distance
     those x and y's are gurobi Var's.
     returns a QuadExpr
     """
@@ -31,7 +32,7 @@ def get_whij(dim_i, dim_j):
     assuming dim_i < dim_j
     because of the p, q permutation ordering
     """
-    return -0.5 * (dim_i - dim_j)
+    return -0.5 * (dim_i + dim_j)
 
 
 
@@ -105,7 +106,7 @@ for i in range(3):
     wij = get_whij(1, 1)    #TODO hard-coded
     hij = get_whij(1, 1)
     d_x.append(wij)
-    d_y.append(hij)
+    d_y.append(hij + M)
 
 
 # for submatrix C * z <= b, constraint #5
@@ -122,6 +123,9 @@ for i in range(3):
     m.addConstr(lhs, GRB.LESS_EQUAL, d_x[i])
     lhs = np.dot(D_y[i], y + r)
     m.addConstr(lhs, GRB.LESS_EQUAL, d_y[i])
+print "all constraints"
+print m.getConstrs()
+
 m.optimize()
 
 for v in m.getVars():
