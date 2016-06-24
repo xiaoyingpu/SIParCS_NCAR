@@ -26,6 +26,15 @@ def get_distance(xi, yi, xj, yj):
     # just in case
     return xi * xi + xj * xj - 2 * xi * xj + yi * yi + yj * yj - 2 * yi * yj
 
+def get_whij(dim_i, dim_j):
+    """
+    assuming dim_i < dim_j
+    because of the p, q permutation ordering
+    """
+    return -0.5 * (dim_i - dim_j)
+
+
+
 m = Model("MIQP")
 
 n_item = 3
@@ -73,11 +82,46 @@ for i in range(3):
     w.append(2)
     h.append(2)
 
-C_x = [[1, -1, 0], [0, 1, -1]]
-C_y = [[0, 1, -1], [-1, 0, 1]]
+C_x =  [[1, -1, 0], \
+        [0, 1, -1]]
 
-D_x = [[],[]]
-D_y = [[],[]]
+C_y =  [[0, 1, -1], \
+        [-1, 0, 1]]
+
+D_x =  [[1, -1, 0, -1 * M, 0, 0],\
+        [1, 0, -1, 0, -1 * M, 0],\
+        [0, 1, -1, 0, 0, -1 * M]]
+
+D_y =  [[1, -1, 0, M, 0, 0],\
+        [1, 0, -1, 0, M, 0],\
+        [0, -1, 1, 0, 0, M]]
+
+c = [0,0]
+d_x = []
+d_y = []
+
+for i in range(3):
+    # get the real hight and width <- same for all models anyways....
+    wij = get_whij(2, 2)    #TODO hard-coded
+    hij = get_whij(2, 2)
+    d_x.append(wij)
+    d_y.append(hij)
 
 
-#m.optimize()
+# for matrix c * z < b, constraint #5
+for i in range(2):
+    lhs = np.dot(C_x[i], x)
+    m.addConstr(lhs, GRB.LESS_EQUAL, c[i])
+
+    lhs = np.dot(C_y[i], y)
+    m.addConstr(lhs, GRB.LESS_EQUAL, c[i])
+
+
+
+
+
+m.optimize()
+
+for v in m.getVars():
+    print("{} = {}".format(v.varname, v.x))
+print(m.objVal)
