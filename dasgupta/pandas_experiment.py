@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
-df = pd.read_csv("./csv/ssim_cmip5_with_label.csv")
+df = pd.read_csv("./csv/ssim_cmip5_cvdp.csv")
 grp = df.groupby("label")
 
 sns.set_palette("hls", n_colors=len(grp))
