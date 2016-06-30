@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
+
 df = pd.read_csv("./csv/ssim_cmip5_cvdp.csv")
 grp = df.groupby("label")
 
