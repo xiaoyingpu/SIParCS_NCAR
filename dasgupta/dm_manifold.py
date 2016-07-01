@@ -91,6 +91,7 @@ def get_distance_matrix(img_dir):
 
 if len(sys.argv) != 3:
     print("Usage: frameworkpython dm_manifold.py <img dir> <sst/psl>")
+    exit()
 
 script_path = os.path.abspath(".")
 
@@ -98,6 +99,7 @@ variable_name = sys.argv[2]
 
 
 f_list, not_used= get_f_list(sys.argv[1])
+
 N = len(f_list)
 
 # note: the working dir will be changed if the first

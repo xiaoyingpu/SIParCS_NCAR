@@ -32,6 +32,6 @@ do i=0, n_files - 1
 
     ; write to a csv file
     opt = True
-    opt@fout = target_dir + f_list(i) + "sst.csv"
+    opt@fout = target_dir + f_list(i) + "-sst.csv"      ;; TODO
     write_matrix(PSL, "144f8.2", opt)
 end do
