@@ -89,12 +89,12 @@ def get_distance_matrix(img_dir):
 
 # -----------main-----------
 
-if len(sys.argv) != 2:
-    print("Usage: frameworkpython dm_manifold.py <img dir>")
+if len(sys.argv) != 3:
+    print("Usage: frameworkpython dm_manifold.py <img dir> <sst/psl>")
 
 script_path = os.path.abspath(".")
 
-
+variable_name = sys.argv[2]
 
 
 f_list, not_used= get_f_list(sys.argv[1])
@@ -102,18 +102,19 @@ N = len(f_list)
 
 # note: the working dir will be changed if the first
 # branch is taken
-if not os.path.isfile("dm.txt"):
+dm_fname = "dm-" + variable_name + "dm.txt"
+if not os.path.isfile(dm_fname):
     # need to compute from scratch
     print("Generating distance matrix")
     dm = get_distance_matrix(sys.argv[1])
     # since computing distance matrix is expensive
     # save a copy for later use
-    with open ("dm.txt", "w") as f:
+    with open (dm_fname, "w") as f:
         np.savetxt(f, dm)
 else:
     # read the distance matrix
     print("Loading distance matrix from file")
-    dm = np.loadtxt("dm.txt")
+    dm = np.loadtxt(dm_fname)
 
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
@@ -165,7 +166,7 @@ for i in range(len(d)):
     df[i] = np.array(df[i])
 
 # ---------- plotting ------------
-f_persist = "csv/ssim_cmip5_with_label.csv"
+f_persist = "csv/ssim_cmip5_with_label_{}.csv".format(variable_name)
 csv_path = os.path.join(script_path, f_persist)
 print csv_path
 if os.path.isfile(csv_path):
@@ -216,7 +217,7 @@ plt.show()
 DO_PERSISTENCE = True
 if DO_PERSISTENCE:
     os.chdir(os.path.join(script_path, "csv"))
-    with open("ssim_cmip5_with_label.csv", "w+") as f:
+    with open("ssim_cmip5_with_label_{}.csv".format(variable_name), "w+") as f:
         writer = csv.writer(f)
         writer.writerow(["x", "y","label", "fname"])
         for i in range(N):
