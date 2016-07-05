@@ -13,13 +13,13 @@
 
 
 
-fn = "MRI-CGCM3_19.cvdp_data.1900-2005.nc"
-dir = "/Users/puxiaoadmin/cmip5/"
+fn = "MIROC5.cvdp_data.1900-2005.nc"
+dir = "/Users/puxiaoadmin/cmip5/sea_ice/"
 f = addfile(dir + fn, "r")
 PSL = f->psl_trends_ann
-MAM = f->psl_trends_mam
-printVarSummary(PSL)
-printVarSummary(PSL&lat)
+MAM = f->aice_nh_spatialmean_djf
+;printVarSummary(PSL)
+;printVarSummary(PSL&lat)
 ;print(min(PSL))
 ;print(num(ismissing(PSL)))
 

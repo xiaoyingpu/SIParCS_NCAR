@@ -3,19 +3,25 @@
 
 from netCDF4 import Dataset
 import numpy as np
+import os
 
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
 
-wd = "~/cmip5/sea_ice/"
+def get_data(wd, fname, var):
 
-os.chdir(wd)
+    os.chdir(wd)
 
+    fh = Dataset(fname, mode="r")
+    aice_nh_spatialmean_ann = fh.variables[var]
+    aice = aice_nh_spatialmean_ann[:]
+    lons = fh.variables["lon"][:]
+    lats = fh.variables["lat"][:]
+    fh.close()
+    return aice
+
+var = "aice_nh_spatialmean_ann"
 fname = "NASA_Bootstrap_v2_NH.cvdp_data.1979-2005.nc"
+wd = "/Users/puxiaoadmin/cmip5/sea_ice"
 
-fh = Dataset(fname, mode="r")
-
-aice = fh.variables["aice_nh_spatialmean_ann"]
-
-
-fh.close()
-
-print aice
+l = get_data(wd, fname, var)
