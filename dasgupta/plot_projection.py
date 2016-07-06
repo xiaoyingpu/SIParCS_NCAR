@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-df = pd.read_csv("./csv/ssim_cmip5_cvdp.csv")
+df = pd.read_csv("./csv/cmip5_4.0.0_aice_nh_spatialmean_ann.csv")
 grp = df.groupby("label")
 
 sns.set_palette("hls", n_colors=len(grp))

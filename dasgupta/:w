@@ -46,17 +46,11 @@ def get_data(fname):
 
 
 
-def get_model(fname):
-    return fname.split("_", 1)[0].split("-",1)[0]
 
 
-def test():
-    d = "/Users/puxiaoadmin/cmip5/sea_ice/regridded"
-    os.chdir(d)
-    f = "Walsh_and_Chapman.cvdp_data.1979-2005.nc.reggrided.nc"
-    l = get_data(f)
-    print(type(l))
-    print(l[0])
+
+
+
 def main():
     """
     Usage: frameworkpyton sea_ice.py <.nc dir>
@@ -96,14 +90,8 @@ def main():
     print Y
 
     # save output
-    f_persist = "cmip5_4.0.0_{}.csv".format(var)
-    os.chdir(os.path.join(script_path, "csv"))
-    with open(f_persist, "w+") as f:
-        writer = csv.writer(f)
-        writer.writerow(["x", "y","label", "fname"])
-        for i in range(N):
-            row = [Y[:,0][i], Y[:,1][i], get_model(f_list[i]), f_list[i]]
-            writer.writerow(row)
-test()
-#main()
+    f_persist = "{}"
+
+main()
+
 
