@@ -13,11 +13,11 @@
 
 
 
-fn = "MIROC5.cvdp_data.1900-2005.nc"
-dir = "/Users/puxiaoadmin/cmip5/sea_ice/"
+fn = "ACCESS1-0.cvdp_data.1900-2005.nc.reggrided.nc"
+dir = "/Users/puxiaoadmin/cmip5/sea_ice/regridded/"
 f = addfile(dir + fn, "r")
-PSL = f->psl_trends_ann
-MAM = f->aice_nh_spatialmean_djf
+;PSL = f->psl_trends_ann
+MAM = f->aice_nh_spatialmean_ann
 ;printVarSummary(PSL)
 ;printVarSummary(PSL&lat)
 ;print(min(PSL))
@@ -60,9 +60,9 @@ res@tiMainString = fn
 res@gsnDraw = False
 res@gsnFrame = False
 
-plot = gsn_csm_contour_map(wks, PSL, res)
+;plot = gsn_csm_contour_map(wks, PSL, res)
 mam = gsn_csm_contour_map(wks, MAM, res)
-gsn_panel(wks, (/plot, mam/), (/2,1/), False)
+gsn_panel(wks, (/ mam/), (/1,1/), False)
 ;; ------ end panel
 
 ;tres = True

@@ -10,7 +10,7 @@ begin
     ;; target var: sea ice
     select_var= "aice_nh_spatialmean_ann"
 
-    dir = "/scratch/CVDP/cmip5/seaice/"   ;; sea ice!
+    dir = "~/cmip5/sea_ice/"    ;; sea ice dir
     cmd = "cd " + dir + "; ls *.nc"
     f_list = systemfunc(cmd)
     n_files = dimsizes(f_list)
@@ -18,8 +18,8 @@ begin
     ;; get a new dir to place regridded files
     new_dir = "~/cmip5/sea_ice/regridded/"
     ; del. old one, creat., change dir
-    ;cmd := "rm -rf " + new_dir + "; mkdir " + new_dir 
-    ;ret = systemfunc(cmd)
+    cmd := "rm -rf " + new_dir + "; mkdir " + new_dir 
+    ret = systemfunc(cmd)
 
     print("Regridding members...")
     do i=0, n_files - 1
