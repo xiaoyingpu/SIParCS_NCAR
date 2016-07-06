@@ -42,6 +42,8 @@ def get_data(fname):
     aice_nh_spatialmean_ann = fh.variables[var]
     aice = aice_nh_spatialmean_ann[:]
     aice = aice.filled(fill_value = 0)
+    aice = aice[130:, :]
+    print(aice)
     fh.close()
     return aice
 
@@ -56,8 +58,7 @@ def test():
     os.chdir(d)
     f = "Walsh_and_Chapman.cvdp_data.1979-2005.nc.reggrided.nc"
     l = get_data(f)
-    print(type(l))
-    print(l[0])
+    print(l.shape)
 
 def main():
     """
