@@ -41,6 +41,7 @@ def get_data(fname):
     fh = Dataset(fname, mode="r")
     aice_nh_spatialmean_ann = fh.variables[var]
     aice = aice_nh_spatialmean_ann[:]
+    aice = aice.filled(fill_value = 0)
     fh.close()
     return aice
 
@@ -57,6 +58,7 @@ def test():
     l = get_data(f)
     print(type(l))
     print(l[0])
+
 def main():
     """
     Usage: frameworkpyton sea_ice.py <.nc dir>
@@ -104,6 +106,6 @@ def main():
         for i in range(N):
             row = [Y[:,0][i], Y[:,1][i], get_model(f_list[i]), f_list[i]]
             writer.writerow(row)
-test()
-#main()
+#test()
+main()
 
