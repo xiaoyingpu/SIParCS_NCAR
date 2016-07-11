@@ -61,7 +61,7 @@ for i in range(1, N):       # change this
 
 
 # create distance matrix
-dm = np.ones((N, N))
+dm = np.zeros((N, N))
 for tup in itertools.combinations(range(N), 2):
     i, j = tup
     s = ssim(aice[i,:,:], aice[j,:,:])
