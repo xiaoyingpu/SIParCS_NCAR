@@ -1,4 +1,5 @@
-from netCDF4 import Dataset, netcdftime
+import datetime
+from netCDF4 import Dataset, num2date
 from skimage.measure import compare_ssim as ssim
 import os
 
@@ -17,16 +18,31 @@ aice = fh.variables[var][:] # now numpy array
 aice = aice.filled(fill_value = 0)
 
 
-# get dat time
+# ----------get date time-------------
 nctime = fh.variables["time"][:]
-t_unit = fh.variavles["time"].units
-try:
-    calendar = fh.variables["time"].calendar
-except AttributeError:
-    calendar = u"gregorian"
 
-date_var = []
-date_var.append(netcdftime.num2date(nctime, units = t_unit, calendar = calendar))
+t = []
+for d in nctime:
+    d = str(d)
+    yyyy = int(d[:4])
+    mm = int(d[4:])
+    date = datetime.date(year= yyyy, month = mm, day = 1)
+    t.append(date)
+
+print t[:4]
+#try:
+#    t_unit = fh.variavles["time"].units
+#    calendar = fh.variables["time"].calendar
+#except AttributeError:
+#    calendar = u"gregorian"
+#    t_unit = "YYYYMM"
+#date_var = [].append((num2date(nctime, units = t_unit, calendar = calendar)))
+
+
+
+
+
+
 
 
 N = len(aice[:,0,0])        # 1700+ timestamps
