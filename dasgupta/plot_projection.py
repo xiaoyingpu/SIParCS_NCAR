@@ -15,7 +15,8 @@ fig, ax = plt.subplots(figsize=(20,10))
 for name, group in grp:
     plt.plot(group.x, group.y, marker = ".",ms = 10, linestyle = " ", label = name)
 
-ax.legend()
+#ax.legend()
+
 ann = []
 N = len(df)
 for i in range(N):
