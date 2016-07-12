@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-df = pd.read_csv("./csv/cmip5_4.0.0_aice_nh_spatialmean_ann.csv")
-grp = df.groupby("label")
+df = pd.read_csv("./csv/ssim_walsh_timecurve.csv")
+print df
+grp = df.groupby("timelabel")
 
 sns.set_palette("hls", n_colors=len(grp))
 
@@ -18,7 +19,7 @@ ax.legend()
 ann = []
 N = len(df)
 for i in range(N):
-    ann.append(ax.annotate(df.label[i], xy = (df.x[i],df.y[i])))
+    ann.append(ax.annotate(df.timelabel[i], xy = (df.x[i],df.y[i])))
 mask = np.zeros(fig.canvas.get_width_height(), bool)
 
 plt.tight_layout()

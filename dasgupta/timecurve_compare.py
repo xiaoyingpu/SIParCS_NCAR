@@ -34,10 +34,6 @@ with open("time.txt") as f:
 
 print f_list
 
-exit()
-
-
-
 
 N = len(f_list)
 
@@ -72,6 +68,6 @@ if DO_PERSISTENCE:
         for i in range(N):
             x = Y[:,0][i]
             y = Y[:,1][i]
-            row = [x, y, model_list[i], f_list[i]]
+            row = [x, y, f_list[i]]
             writer.writerow(row)
 
