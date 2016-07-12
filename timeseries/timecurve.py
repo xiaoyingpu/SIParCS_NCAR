@@ -16,25 +16,25 @@ def get_datetime(d):
 
 
 
+old_path = os.path.abspath(".")
 
 var = "sic"
 path = "/Users/puxiaoadmin/cmip5/timeseries"
 Walsh = "walsh_chapman.NH.seaice.187001-201112.nc"
 NASA = "seaice_conc_monthly_nh_NASA_Bootstrap_v2.nsidc.v02r00.197811-201412.nc"
 
-old_path = os.path.abspath(".")
-
 # change working dir
 os.chdir(path)
 
 fh = Dataset(Walsh, mode="r")
 
-aice = fh.variables[var][:] # now numpy array
+# ----------get date time-------------
+# TODO now getting january data
+nctime = fh.variables["time"][:][::12]
+aice = fh.variables[var][:][::12] # now numpy array
 aice = aice.filled(fill_value = 0)
 
 
-# ----------get date time-------------
-nctime = fh.variables["time"][:]
 #try:
 #    t_unit = fh.variavles["time"].units
 #    calendar = fh.variables["time"].calendar
@@ -49,15 +49,14 @@ nctime = fh.variables["time"][:]
 N = len(aice[:,0,0])        # 1700+ timestamps
 
 # the movie analogy
-N = 12                      # start small
+#N = 240                      # start small
 
 # create time labels
 time_label = []
-for i in range(1, N):       # change this
+for i in range( N):       # change this
     date = get_datetime(nctime[i])
     date_str = date.isoformat() + " 00:00:00.0" # I don't care
     time_label.append(date_str)
-    print date_str
 
 
 # create distance matrix
@@ -73,14 +72,25 @@ for tup in itertools.combinations(range(N), 2):
 json_dic = {}
 print type(dm)
 json_dic["distancematrix"] = dm.tolist()
-json_dic["data"] = {}
-json_dic['data']['name'] = "1870"
-json_dic['data']['timelabels'] = time_label
+json_dic["data"] = []
+data_dic = {}
+data_dic['name'] = "1870"
+data_dic['timelabels'] = time_label
+json_dic["data"].append(data_dic)
 
+
+# get back and save files
 os.chdir(old_path)
 
 with open("out.json", "w") as f:
     json.dump(json_dic, f, indent = 4, sort_keys = True)
 
+with open ("dm_timecurve.txt", "w") as g:
+    np.savetxt(g, dm)
+
+time_label = np.asarray(time_label)
+
+with open ("time.txt", "wb") as h:
+    np.savetxt(h, time_label, fmt = "%s")
 
 fh.close()

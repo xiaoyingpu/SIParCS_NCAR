@@ -101,18 +101,19 @@ N = len(f_list)
 
 # note: the working dir will be changed if the first
 # branch is taken
-if not os.path.isfile("dm.txt"):
+f_dm = "dm_timecurve.txt"
+if not os.path.isfile(f_dm):
     # need to compute from scratch
     print("Generating distance matrix")
     dm = get_distance_matrix(sys.argv[1], f_list)
     # since computing distance matrix is expensive
     # save a copy for later use
-    with open ("dm.txt", "w") as f:
+    with open (f_dm, "w") as f:
         np.savetxt(f, dm)
 else:
     # read the distance matrix
     print("Loading distance matrix from file")
-    dm = np.loadtxt("dm.txt")
+    dm = np.loadtxt(f_dm)
 
 # http://www.nervouscomputer.com/hfs/cmdscale-in-python/
 # classical MDS
@@ -128,7 +129,7 @@ Y = np.array(Y)
 
 
 # ---------- persistence ------
-f_persist = "ssim_cmip5_cvdp.csv"
+f_persist = "ssim_cmip5_cvdp-timecurve.csv"
 
 model_list = pd_df["short_name"].tolist()
 pd_df.columns = pd_df.columns.map(str.strip)
