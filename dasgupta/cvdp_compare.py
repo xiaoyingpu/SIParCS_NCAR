@@ -101,7 +101,7 @@ N = len(f_list)
 
 # note: the working dir will be changed if the first
 # branch is taken
-f_dm = "dm_timecurve.txt"
+f_dm = "dm.txt"
 if not os.path.isfile(f_dm):
     # need to compute from scratch
     print("Generating distance matrix")

@@ -29,9 +29,12 @@ os.chdir(path)
 fh = Dataset(Walsh, mode="r")
 
 # ----------get date time-------------
-# TODO now getting january data
-nctime = fh.variables["time"][:][::12]
-aice = fh.variables[var][:][::12] # now numpy array
+# TODO now getting august data
+
+nctime = fh.variables["time"][:][7:]
+nctime = nctime[::12]
+aice = fh.variables[var][:][7:]
+aice = aice[::12] # now numpy array
 aice = aice.filled(fill_value = 0)
 
 
@@ -82,7 +85,7 @@ json_dic["data"].append(data_dic)
 # get back and save files
 os.chdir(old_path)
 
-with open("out.json", "w") as f:
+with open("august.json", "w") as f:
     json.dump(json_dic, f, indent = 4, sort_keys = True)
 
 with open ("dm_timecurve.txt", "w") as g:
