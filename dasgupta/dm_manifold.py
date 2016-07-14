@@ -104,7 +104,7 @@ N = len(f_list)
 
 # note: the working dir will be changed if the first
 # branch is taken
-dm_fname = "dm-" + variable_name + "dm.txt"
+dm_fname = "dm-" + variable_name + ".txt"
 # delete these -------
 #dm_fname = "dm_timecurve.txt"
 #variable_name = "timecurve"
@@ -116,8 +116,10 @@ if not os.path.isfile(dm_fname):
     dm = get_distance_matrix(sys.argv[1])
     # since computing distance matrix is expensive
     # save a copy for later use
+    os.chdir(script_path)
     with open (dm_fname, "w") as f:
         np.savetxt(f, dm)
+        print("persisted distance matrix @ {}".format(os.path.abspath(".")))
 else:
     # read the distance matrix
     print("Loading distance matrix from file")
@@ -159,14 +161,13 @@ d = category.get_color_dic(os.path.abspath(sys.argv[1]))
 df = {}
 for i in range(len(d)):
     df[i] = []
-print N
+
 for i in range(N):
     index = d[category.model(f_list[i])]
     x = Y[:,0][i]
     y = Y[:,1][i]
     f = f_list[i]
     df[index].append([x,y,f])
-    print [x, y, f]
 
 
 for i in range(len(d)):

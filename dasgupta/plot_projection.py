@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-df = pd.read_csv("./csv/ssim_walsh_timecurve.csv")
+df = pd.read_csv("./csv/ssim_cmip5_with_label_psl.csv")
 print df
-grp = df.groupby("timelabel")
+grp = df.groupby("label")
 
 sns.set_palette("hls", n_colors=len(grp))
 
@@ -20,7 +20,7 @@ for name, group in grp:
 ann = []
 N = len(df)
 for i in range(N):
-    ann.append(ax.annotate(df.timelabel[i], xy = (df.x[i],df.y[i])))
+    ann.append(ax.annotate(df.label[i], xy = (df.x[i],df.y[i])))
 mask = np.zeros(fig.canvas.get_width_height(), bool)
 
 plt.tight_layout()

@@ -6,7 +6,7 @@ from sklearn import manifold, datasets
 
 # von http://stats.stackexchange.com/questions/12819/how-to-draw-a-scree-plot-in-python
 
-matrix_f = "dm_ensemble.txt"
+matrix_f = "dm_psl.txt"
 
 with open(matrix_f) as f:
     A = np.loadtxt(f)
