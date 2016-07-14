@@ -58,7 +58,7 @@ def get_distance_matrix(img_dir):
 
     os.chdir(img_dir)
     N = len(f_list)
-    dm = np.zeros((N, N))
+    dm = np.ones((N, N))
     if IS_IMG:
         # distance matrix, n by n init to zeros
         for i_tuple in itertools.combinations(range(len(f_list)), 2):
@@ -106,9 +106,10 @@ N = len(f_list)
 # branch is taken
 dm_fname = "dm-" + variable_name + "dm.txt"
 # delete these -------
-dm_fname = "dm_timecurve.txt"
-variable_name = "timecurve"
+#dm_fname = "dm_timecurve.txt"
+#variable_name = "timecurve"
 # delete these -----
+
 if not os.path.isfile(dm_fname):
     # need to compute from scratch
     print("Generating distance matrix")
