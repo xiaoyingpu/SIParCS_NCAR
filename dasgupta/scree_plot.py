@@ -20,6 +20,10 @@ def do_scree_plot(A):
     sing_vals = np.arange(num_vars) + 1
     sing_vals = sing_vals[:9]
     eigvals = eigvals[:9]
+    # getting rid of the first one
+    sing_vals = sing_vals[1:]
+    eigvals = eigvals[1:]
+
     plt.plot(sing_vals, eigvals, 'ro-', linewidth=2)
     plt.title('Scree Plot')
     plt.xlabel('Principal Component')
@@ -34,4 +38,5 @@ def do_scree_plot(A):
 
 fold = manifold.MDS(n_components=2, dissimilarity='precomputed')
 fold.fit_transform(A)
-print fold.stress_
+do_scree_plot(A)
+#print fold.stress_

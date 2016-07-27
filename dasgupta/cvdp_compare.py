@@ -101,7 +101,7 @@ N = len(f_list)
 
 # note: the working dir will be changed if the first
 # branch is taken
-f_dm = "dm.txt"
+f_dm = "dm_cvdp.txt"
 if not os.path.isfile(f_dm):
     # need to compute from scratch
     print("Generating distance matrix")
@@ -129,7 +129,7 @@ Y = np.array(Y)
 
 
 # ---------- persistence ------
-f_persist = "ssim_cmip5_cvdp-timecurve.csv"
+f_persist = "ssim_cmip5_cvdp_42.csv"
 
 model_list = pd_df["short_name"].tolist()
 pd_df.columns = pd_df.columns.map(str.strip)

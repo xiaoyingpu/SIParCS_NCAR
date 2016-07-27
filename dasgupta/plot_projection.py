@@ -3,30 +3,41 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
 import math
+from matplotlib.font_manager import FontProperties
 
-df = pd.read_csv("./csv/ssim_cmip5_190_metric_mds.csv")
-print df
+
+df = pd.read_csv("./csv/ssim_cmip5_cvdp_42.csv")
 grp = df.groupby("label")
 
+sns.set_style("white")
 sns.set_palette("hls", n_colors=len(grp))
 
-fig, ax = plt.subplots(figsize=(20,10))
+fig, ax = plt.subplots(figsize=(8, 6), dpi = 96) # in inches
 #palette = np.array(sns.color_palette("hls", 25))
+
 for name, group in grp:
     plt.plot(group.x, group.y, marker = ".",ms = 10, linestyle = " ", label = name)
 # was 10 for ms
-#ax.legend()
 
-#ann = []
-#N = len(df)
-#for i in range(N):
-#    ann.append(ax.annotate(df.label[i], xy = (df.x[i],df.y[i])))
-#mask = np.zeros(fig.canvas.get_width_height(), bool)
-#
-#plt.tight_layout()
-##plt.legend()
-## overlapping labels removal
-#fig.canvas.draw()
+
+# legend
+
+
+#ax.legend()
+#plt.legend()
+
+
+
+# annotation / label
+ann = []
+N = len(df)
+for i in range(N):
+    ann.append(ax.annotate(df.label[i], xy = (df.x[i],df.y[i])))
+mask = np.zeros(fig.canvas.get_width_height(), bool)
+
+plt.tight_layout()
+#overlapping labels removal
+fig.canvas.draw()
 #for a in ann:
 #    bbox = a.get_window_extent()
 #    x0 = int(bbox.x0)

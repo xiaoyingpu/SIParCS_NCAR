@@ -40,3 +40,4 @@ MRI-CGCM3,    MRI-CGCM3_0.cvdp_data.1900-2005.nc,     0.75, 0.33
 MRI-ESM1,     MRI-ESM1_0.cvdp_data.1900-2005.nc,      0.78, 0.32
 NorESM1-M,    NorESM1-M_0.cvdp_data.1900-2005.nc,     0.81, 0.41
 NorESM1-ME,   NorESM1-ME_0.cvdp_data.1900-2005.nc,    0.83, 0.38
+Observation,  20thC_ReanV2.cvdp_data.1901-2010.nc,1, 0
