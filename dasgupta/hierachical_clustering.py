@@ -19,8 +19,8 @@ print df
 #plt.show()
 
 X = df.as_matrix()
+lbl = X[:, 2]
 X = X[:, :2]
-
 Z = linkage(X, 'ward')
 
 c, coph_dists = cophenet(Z, pdist(X))
@@ -33,7 +33,8 @@ plt.xlabel('sample index')
 plt.ylabel('distance')
 dendrogram(
     Z,
-    leaf_rotation=90.,  # rotates the x axis labels
+    labels = lbl,
+    leaf_rotation=60.,  # rotates the x axis labels
     leaf_font_size=8.,  # font size for the x axis labels
 )
 plt.show()
